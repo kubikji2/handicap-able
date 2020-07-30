@@ -54,7 +54,12 @@ module handle_hole()
 
 //handle_hole();
 
-module handle()
+// VARIABLE PARAMETERS
+// fd - front diameter
+//    - is diameter closer to the spoon/fork front end (that part that is in contact with mouth)
+// bd - back diameter
+//    - is diameter of the sphere on the back end
+module handle(fd = wf+2*wt, bd = db+2*wt)
 {
     difference()
     {
@@ -63,13 +68,14 @@ module handle()
                 hull()
                 {
                     // front area
-                    cylinder(d=2*wt+wf,h=1);
+                    cylinder(d=fd,h=1);
                     // back ball
                     translate([0,0,hl-db/2])
-                        sphere(d=2*wt+db);
+                        sphere(d=bd);
                 }
             handle_hole();
     }
 }
 
 handle();
+
