@@ -3,7 +3,7 @@ eps = 0.01;
 $fn = 90;
 
 // contact area height
-c_h = 70;
+c_h = 60;
 // contact area diameter
 c_d = 15;
 
