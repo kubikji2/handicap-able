@@ -1,5 +1,6 @@
 $fn = 90;
 eps = 0.01;
+tol = 0.2;
 
 // general parameters
 // wall thickness
@@ -22,8 +23,10 @@ bat = 8;
 bal = 30;
 
 
-module handle_hole()
+module handle_hole(left_handed = false)
 {
+    y_off = left_handed ? db : 0;
+    translate([0,y_off,0])
     difference()
     {
         // main shape in the size of the back hole
@@ -59,7 +62,10 @@ module handle_hole()
 //    - is diameter closer to the spoon/fork front end (that part that is in contact with mouth)
 // bd - back diameter
 //    - is diameter of the sphere on the back end
-module handle(fd = wf+2*wt, bd = db+2*wt)
+// left_handed - determines whether the cutlery extender is used by left handed user
+module handle(  fd = wf+2*wt,
+                bd = db+2*wt,
+                left_handed=false)
 {
     difference()
     {
@@ -73,7 +79,7 @@ module handle(fd = wf+2*wt, bd = db+2*wt)
                     translate([0,0,hl-db/2])
                         sphere(d=bd);
                 }
-            handle_hole();
+            handle_hole(left_handed=left_handed);
     }
 }
 
