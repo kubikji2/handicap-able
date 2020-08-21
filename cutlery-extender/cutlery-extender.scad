@@ -16,6 +16,7 @@ hl = 94;
 
 // z parameters
 // cuttlery handle thickness
+// NOTE: 2.5 for spoon, 2.4 for fork
 ht = 2.5;
 // back curved area thickness
 bat = 8;
@@ -30,6 +31,13 @@ bal = 30;
 // locking pins height
 cl_h = 5;
 
+// B-lock parameter
+// - cutlery lock in the back of the extended handle
+// - bl_ is used as prefix
+// B-lock length
+bl_l = 5;
+
+// pins used in the C-lock
 module pins(fd=wf+2*wt)
 {
     /*
@@ -56,6 +64,7 @@ module pins(fd=wf+2*wt)
     }
 }
 
+// C-lock module used for fixing cutlery in the extender
 module c_lock(  fd = wf+2*wt,
                 left_handed = false)
 {
@@ -74,7 +83,7 @@ module c_lock(  fd = wf+2*wt,
     
 }
 
-c_lock();
+//c_lock();
 
 
 module handle_hole(left_handed = false)
@@ -86,14 +95,15 @@ module handle_hole(left_handed = false)
         // main shape in the size of the back hole
         hull()
         {
-            translate([hl-db/2,0,0])                    
+            // rounded back
+            translate([hl-db/2,0,0])
                 hull()
                 {
                     cylinder(d=db,h=bat);
                     translate([0,-db,0])
                         cylinder(d=db,h=bat);
-                }
-                
+                }   
+            // WTF???
             translate([0,-wf/2,0])
                 hull()
                 {
@@ -103,9 +113,21 @@ module handle_hole(left_handed = false)
                 }
         }
         
-        // cuting front part
+        // cutting front part
         translate([-eps,-3*db/2,ht])
-            cube([hl-bal,2*db,bal]);   
+            cube([hl-bal,2*db,bal]);
+        
+        // cutting for b-lock
+        translate([hl-bl_l,-db,0])
+            cube([bl_l,db,db]);
+        
+    }
+    
+    
+    translate([hl-db/2,-y_off,0])
+    {
+        cylinder(d=db,h=bat);
+        
     }
 }
 
@@ -133,9 +155,16 @@ module handle(  fd = wf+2*wt,
                     translate([0,0,hl-db/2])
                         sphere(d=bd);
                 }
-            handle_hole(left_handed=left_handed);
+        
+        // hole for the cutlery        
+        handle_hole(left_handed=left_handed);
+        
+        // C-lock hole
+        clh_t = 2*tol + wt;
+        translate([-eps,-clh_t/2,-bd/2+ht/2])
+            cube([cl_h,clh_t+tol,bd]);
     }
 }
 
-//handle();
+handle();
 
