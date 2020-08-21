@@ -14,13 +14,67 @@ wf = 9;
 // handle length
 hl = 94;
 
-// z paramters
-// handle thickness
+// z parameters
+// cuttlery handle thickness
 ht = 2.5;
 // back curved area thickness
 bat = 8;
 // back curver area length
 bal = 30;
+
+// C-lock parameters
+// - C-lock cutlery in the y axis
+// - cl_ is used as pefix
+//// locking pins diameter
+//cl_d = 3;
+// locking pins height
+cl_h = 5;
+
+module pins(fd=wf+2*wt)
+{
+    /*
+    // lock pins are in the middle of the space between the cutlery hole and the border
+    lp_y_off = (wf/2+wt+ht/2)/2;
+    translate([0,-lp_y_off,0])
+        cylinder(d=cl_d,h=cl_h);
+    translate([0,lp_y_off,0])
+        cylinder(d=cl_d,h=cl_h);
+    */
+    difference()
+    {
+        // main body
+        cylinder(d=fd,h=cl_h);
+        // right cut
+        translate([wt/2,-fd/2,-eps])
+            cube([fd,fd,cl_h+2*eps]);
+        // left cube
+        translate([-fd-wt/2,-fd/2,-eps])
+            cube([fd,fd,cl_h+2*eps]);
+        // cutlery cut
+        translate([-fd/2,-ht/2,-eps])
+            cube([fd,ht,cl_h+2*eps]);
+    }
+}
+
+module c_lock(  fd = wf+2*wt,
+                left_handed = false)
+{
+    difference()
+    {
+        // main disk
+        cylinder(d=fd,h=wt);
+        // hole for cutlery
+        y_off = left_handed ? 0 : db;
+        translate([-wf/2,-ht/2,-eps])
+            cube([wf+wt,ht,wt+2*eps]);
+    }
+    // lock pins
+    translate([0,0,wt])
+        pins();
+    
+}
+
+c_lock();
 
 
 module handle_hole(left_handed = false)
@@ -83,5 +137,5 @@ module handle(  fd = wf+2*wt,
     }
 }
 
-handle();
+//handle();
 
