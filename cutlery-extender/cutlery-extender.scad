@@ -35,7 +35,7 @@ cl_h = 5;
 // - cutlery lock in the back of the extended handle
 // - bl_ is used as prefix
 // B-lock length
-bl_l = 5;
+bl_l = 7;
 
 // pins used in the C-lock
 module pins(fd=wf+2*wt)
@@ -123,12 +123,10 @@ module handle_hole(left_handed = false)
         
     }
     
-    
-    translate([hl-db/2,-y_off,0])
-    {
+    // adding hole for the cutlery handle
+    _y_off = left_handed ? db : 0;
+    translate([hl-db/2,-y_off+_y_off,0])
         cylinder(d=db,h=bat);
-        
-    }
 }
 
 //handle_hole();
@@ -141,7 +139,7 @@ module handle_hole(left_handed = false)
 // left_handed - determines whether the cutlery extender is used by left handed user
 module handle(  fd = wf+2*wt,
                 bd = db+2*wt,
-                left_handed=false)
+                left_handed=true)
 {
     difference()
     {
