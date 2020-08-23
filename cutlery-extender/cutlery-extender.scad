@@ -73,9 +73,25 @@ module handle(fd = wf+2*wt, bd = db+2*wt)
                     translate([0,0,hl-db/2])
                         sphere(d=bd);
                 }
-            handle_hole();
+        handle_hole();
+        // drilling diameter labels
+        f_s = 5;
+        translate([f_s,0,fd/2+ht/2-1])
+            linear_extrude(100)
+                text(font="Consolas:style=Regular",
+                size=f_s, halign="center", valign="center",
+                text = str(fd));
+
+        translate([hl-f_s-bd/4,0,bd/2+ht/2-1])
+            linear_extrude(100)
+                text(font="Consolas:style=Regular",
+                size=f_s, halign="center", valign="center",
+                text = str(bd));            
     }
 }
 
 handle();
+
+
+
 
