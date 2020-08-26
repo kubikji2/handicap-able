@@ -1,6 +1,6 @@
 $fn = 90;
 eps = 0.01;
-tol = 0.2;
+tol = 0.1;
 
 // general parameters
 // wall thickness
@@ -75,11 +75,19 @@ module c_lock(  fd = wf+2*wt,
         // hole for cutlery
         y_off = left_handed ? 0 : db;
         translate([-wf/2,-ht/2,-eps])
-            cube([wf+wt,ht,wt+2*eps]);
+            cube([fd-wt,ht,fd+2*eps]);
+        
+        // debug label
+        f_s = 3;
+        translate([fd/4,f_s/2+ht/2,wt-0.5+eps])
+            linear_extrude(0.5)
+                text(font="Consolas:style=Regular",
+                size=f_s, halign="center", valign="center",
+                text = str(fd));
     }
     // lock pins
     translate([0,0,wt])
-        pins();
+        pins(fd);
     
 }
 
@@ -153,10 +161,10 @@ module handle(  fd = wf+2*wt,
                     translate([0,0,hl-db/2])
                         sphere(d=bd);
                 }
-        handle_hole();
+       
         // drilling diameter labels
         f_s = 5;
-        translate([f_s,0,fd/2+ht/2-1])
+        translate([cl_h + f_s,0,fd/2+ht/2-1])
             linear_extrude(100)
                 text(font="Consolas:style=Regular",
                 size=f_s, halign="center", valign="center",
@@ -178,7 +186,15 @@ module handle(  fd = wf+2*wt,
     }
 }
 
-handle();
+//handle();
+
+//c_lock(fd = wf+2*wt);
+
+
+
+handle( fd = wf+2*wt+10,
+        bd = db+2*wt+10,
+        left_handed=true);
 
 
 
