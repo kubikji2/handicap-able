@@ -34,4 +34,31 @@ module hand_handle()
         cylinder(d=e_d, h=e_h);
 }
 
-hand_handle();
+//hand_handle();
+
+module handle_debug()
+{
+    difference()
+    {
+        // main geometry
+        hand_handle();
+        
+        // debug info
+        f_s = 5;
+        _h = 2*e_h + 2*t_h + c_h; 
+        // enders diameter
+        translate([0,e_d/4,_h-0.5+eps])
+            linear_extrude(0.5)
+                text(font="Consolas:style=Regular",
+                size=f_s, halign="center", valign="center",
+                text = str("c", c_d));
+        // contact area diameter
+        translate([0,-e_d/4,_h-0.5+eps])
+            linear_extrude(0.5)
+                text(font="Consolas:style=Regular",
+                size=f_s, halign="center", valign="center",
+                text = str("e", e_d));
+    }
+}
+
+handle_debug();
