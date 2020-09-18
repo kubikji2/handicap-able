@@ -7,6 +7,23 @@ $fn = 90;
 wt = 2;
 
 
+// plate wall angle
+a = 45;
+// plate wall thickness
+p_t = 5;
+// plate hight
+p_h = 50;
+
+// plate interface length
+pi_l = 5;
+// plate interface depth
+pi_d = 5;
+// plate interface width
+pi_w = 10;
+
+// connector parameters
+c_d = 10;
+
 // suction cup
 // lower part parameters
 // - d and h
@@ -49,8 +66,11 @@ module suction_interface()
     
     difference()
     {
+        // TODO possiblz change orientation
         //main shell
-        cylinder(d=_D, h=_H);
+        //cylinder(d=_D, h=_H);
+        translate([-_D/2,-_D/2,0])
+            cube([_D,_D,_H]);
         
         // cutting lower suction cup compartement
         translate([0,0,-eps])
@@ -85,14 +105,61 @@ module suction_interface()
         hull()
         {
             // wider part
-            translate([-_X/2-sc_off,sc_d/2+3*sc_off,0])
-                cube([_X+2*sc_off,_y,sc_h]);
+            translate([-_X/2-sc_off,sc_D/2+3*sc_off,0])
+                cube([_X+2*sc_off,_y,sc_H]);
             // more narrow part
-            translate([-_X/2,sc_d/2+sc_off,0])
-                cube([_X,_y,sc_h]);
+            translate([-_X/2,sc_D/2+sc_off,0])
+                cube([_X,_y,sc_H]);
         }
+    }
+}
+
+
+
+
+suction_interface();
+
+
+module connector()
+{
+    difference()
+    {
+        _h = p_h - sc_h - sc_H - wt;
+        _D = sc_D + 2*wt;
+        union()
+        {
+            // main connector body
+            translate([0,(c_d-_D)/2,0])
+            {
+                cylinder(d=c_d, h=_h);
+                translate([-c_d/2,-c_d/2,0])
+                    cube([c_d,c_d/2,_h]);
+            }
+            
+            // connecting to the suction cup intergace
+            hull()
+            {
+                // shape of the connector
+                translate([0,(c_d-_D)/2,_D-c_d])
+                union()
+                {
+                    cylinder(d=c_d,h=eps);
+                    translate([-c_d/2,-c_d/2,0])
+                        cube([c_d,c_d/2,eps]);
+                }
+                // shape of the suction interface
+                translate([-_D/2,-_D/2,0])
+                cube([_D,_D,eps]);
+                
+            }
+            
+            // plate interface
+            
+        }
+        
     }
     
 }
 
-suction_interface();
+translate([0,0,sc_h+sc_H+wt])
+    connector();
