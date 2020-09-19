@@ -114,7 +114,27 @@ module suction_interface()
             translate([-_X/2,sc_D/2+sc_off,0])
                 cube([_X,_y,sc_H]);
         }
+        // debug print
+        f_s = 5;
+        f_d = 0.5;
+        translate([_D/2+eps-f_d,0,_H/2])
+        rotate([0,90,0])
+        rotate([0,0,90])  
+            linear_extrude(f_d)
+                text(str("a:",a),
+                    font="Consolas:style=Regular",size=f_s,
+                    valign="center", halign="center");
+        
+        translate([-_D/2-eps+f_d,0,_H/2])
+        rotate([0,-90,0])
+        rotate([0,0,270])  
+            linear_extrude(f_d)
+                text(str("h:",p_h),
+                    font="Consolas:style=Regular",size=f_s,
+                    valign="center", halign="center");
+
     }
+        
 }
 
 
@@ -185,6 +205,8 @@ module connector()
             rotate([-a,0,0])
                 translate([0,wt+eps,wt])
                 cube([_x+2*eps,pi_l,p_t]);
+        
+        
         
     }
     
