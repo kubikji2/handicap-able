@@ -1,6 +1,7 @@
 // general purpose parameters
 eps = 0.01;
 $fn = 90;
+tol = 0.2;
 
 // plate parameters
 // wall thickness
@@ -8,7 +9,7 @@ wt = 2;
 
 
 // plate wall angle
-a = 45;
+a = 60;
 // plate wall thickness
 p_t = 5;
 // plate hight
@@ -31,33 +32,35 @@ c_d = 10;
 // - D and H
 
 // suction cup offset
-sc_off = 0.5;
 // '-> 2 mm suction cup
-///*
+/*
+sc_off = 0.25;
 sc_diam = 20;
-sc_d = 3.5;
-sc_h = 2;
+sc_d = 3.6;
+sc_h = 1.8;
 sc_D = 7;
-sc_H = 2;
-//*/
+sc_H = 2+tol;
+*/
 
 // '-> 3 mm suction cup
 /*
+sc_off = 0.25;
 sc_diam = 30;
-sc_d = 4.6;
+sc_d = 4.8;
 sc_h = 2.5;
-sc_D = 7.5;
-sc_H = 1.8;
+sc_D = 7.8;
+sc_H = 1.8+tol;
 */
 
 // '-> 4 mm suction cup
-/*
+///*
+sc_off = 0.5;
 sc_diam = 40;
 sc_d = 8;
 sc_h = 2.75;
 sc_D = 12.7;
-sc_H = 3.75;
-*/
+sc_H = 3.75+tol;
+//*/
 
 module suction_interface()
 {
@@ -153,13 +156,40 @@ module connector()
                 
             }
             
+            
+            
             // plate interface
+            _x = pi_w;
+            _y = pi_l+wt;
+            _z = p_t+2*wt;
+            hull()
+            {
+                // plate-connector interface
+                translate([-_x/2,0,_h])
+                    rotate([-a,0,0])
+                        cube([_x,_y,_z]);
+                // slope
+                c_z = cos(a)*_z;
+                s_z = sin(a)*_y;
+                translate([-_x/2,-c_d/2-(_D-c_d)/2,_h-s_z])
+                    cube([c_d,eps,c_z+s_z]);
+            }
             
         }
+        
+        // plate interface
+        _x = pi_w;
+        _y = pi_l+wt;
+        _z = p_t+2*wt;
+        #translate([-_x/2-eps,0,_h])
+            rotate([-a,0,0])
+                translate([0,wt+eps,wt])
+                cube([_x+2*eps,pi_l,p_t]);
         
     }
     
 }
+
 
 translate([0,0,sc_h+sc_H+wt])
     connector();
