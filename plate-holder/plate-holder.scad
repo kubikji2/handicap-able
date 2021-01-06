@@ -80,6 +80,30 @@ pi_w = 10;
 // connector parameters
 c_d = 10;
 
+// joint parameters
+// M3x10 choosen for first experiment
+// '-> nd - nut diameter
+// '-> nt - nut thickness
+// '-> bd - bolt diameter
+// '-> bhd - bolt head diameter
+// '-> bht - bolt head thickness
+// '-> btl - bolt thread length
+// '-> bl - bolt (total) length including thread and head
+nd = 6.2;
+nt = 2.4;
+bd = 3; // M3
+bhd = 5.1;
+bht = 1.8;
+btl = 10; //x10
+bl = btl+bht;
+
+// joint dimensions
+// '-> make is same as total lengt of the bolt
+j_x = bl;
+j_y = (bl-tol)/2;
+j_z = j_x;
+
+
 module suction_interface()
 {
     _D = 2*wt + sci_D;
@@ -154,7 +178,71 @@ module suction_interface()
     }        
 }
 
-suction_interface();
+
+//suction_interface();
+
+module joint_shape()
+{
+    // rounded connecting
+    translate([0,0,j_x/2+tol])
+        rotate([90,0,0])
+            cylinder(d=j_x,h=j_y);
+    // connecting part
+    translate([-j_x/2,-j_y,0])
+        cube([j_x,j_y,j_z/2+tol]);
+    
+    
+}
+
+module lower_joint()
+{
+    translate([0,-j_y-tol/2,0])
+    rotate([0,0,180])
+    difference()
+    {
+        // basic shape
+        joint_shape();
+        
+        // translate into center
+        translate([0,eps,j_z/2+tol])
+        {
+            // hole for the bolt
+            rotate([90,0,0])
+                cylinder(d=bd,h=j_y+2*eps);
+            
+            // hole for the bolt head
+            rotate([90,0,0])
+                cylinder(d=bhd,h=bht);
+        }
+        
+    }
+}
+
+//lower_joint();
+
+module upper_joint()
+{   
+    translate([0,j_y+tol/2,0])
+    difference()
+    {
+        // basic shape
+        joint_shape();
+        
+        // translate to the center
+        translate([0,eps,j_z/2+tol])
+        {
+            // hole for the bolt
+            rotate([90,0,0])
+                cylinder(d=bd,h=j_y+2*eps);
+            
+            // hole for the bolt head
+            rotate([90,0,0])
+                cylinder(d=nd,h=nt,$fn=6);
+        }
+    }
+}
+
+//upper_joint();
 
 
 module connector(_a=60,_l=p_h)
