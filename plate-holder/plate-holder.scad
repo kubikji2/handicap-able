@@ -75,9 +75,6 @@ pi_d = 10;
 // plate interface width
 pi_w = 10;
 
-// connector parameters
-c_d = 10;
-
 // joint parameters
 // M3x10 choosen for first experiment
 // '-> nd - nut diameter
@@ -110,6 +107,10 @@ pi_ch = p_t; // same as the plate wall thickness
 pi_x = j_x;
 pi_y = j_x;
 pi_z = pi_cd+5;
+
+// connector parameters
+// '-> connector diameter
+c_d = j_x;
 
 module suction_interface()
 {
@@ -295,96 +296,59 @@ module upper_piece()
     
 }
 
-
-module connector(_a=60,_l=p_h)
+module connector()
 {
     difference()
     {
-        _h = _l - sc_h - sc_H - wt;
-        _D = sc_D + 2*wt;
+        _h = p_h - sci_t - sci_T - wt - sc_t - j_y - tol;
+        _D = sci_D + 2*wt;
         union()
         {
             // main connector body
-            translate([0,(c_d-_D)/2,0])
+            translate([-c_d/2,-c_d/2,0])
             {
-                cylinder(d=c_d, h=_h);
-                translate([-c_d/2,-c_d/2,0])
-                    cube([c_d,c_d/2,_h]);
+                // lower full cube
+                cube([c_d,c_d,_h-c_d/2]);
+                
+                // rounded area
+                translate([c_d/2,c_d,_h-c_d/2])
+                    rotate([90,0,0])
+                        cylinder(h=c_d,d=c_d);
+                
+                // connecting to the joint
+                translate([0,c_d-j_y,0])
+                    cube([c_d,j_y,_h]);
             }
             
             // connecting to the suction cup intergace
             hull()
             {
                 // shape of the connector
-                translate([0,(c_d-_D)/2,_D-c_d])
-                union()
+                translate([0,0,_D-c_d])
                 {
-                    cylinder(d=c_d,h=eps);
                     translate([-c_d/2,-c_d/2,0])
-                        cube([c_d,c_d/2,eps]);
+                        cube([c_d,c_d,eps]);
                 }
                 // shape of the suction interface
                 translate([-_D/2,-_D/2,-eps])
                     cube([_D,_D,eps]);
-                
             }
             
-            
-            
-            // plate interface
-            _x = pi_w;
-            _y = pi_d+wt;
-            _z = p_t+3*wt;
-            hull()
-            {
-                // plate-connector interface
-                translate([-_x/2,0,_h])
-                    rotate([-_a,0,0])
-                        cube([_x,_y,_z]);
-                // slope
-                c_z = cos(_a)*_z;
-                s_z = sin(_a)*_y;
-                translate([-_x/2,-c_d/2-(_D-c_d)/2,_h-s_z])
-                    cube([c_d,eps,c_z+s_z]);
-            }
-            
-        }
-        
-        // plate interface
-        _x = pi_w;
-        _y = pi_d+wt;
-        _z = p_t+2*wt;
-        #translate([-_x/2-eps,0,_h])
-            rotate([-_a,0,0])
-                translate([0,wt+eps,wt])
-                cube([_x+2*eps,pi_d,p_t]);
-        
-        
-        
+            // adding upper joint
+            translate([0,0,_h])
+                upper_joint();
+         }
     }
     
 }
 
-
-module plate_holder(_a=a,_l=p_h)
+module lower_piece()
 {
-    // lower part e.g. suction cup interfece
-    suction_interface(_a=_a,_l=_l);
-    
-    // adding connector
-    translate([0,0,sc_h+sc_H+wt])
-        connector(_a=_a);
+    suction_interface();
+    translate([0,0,sci_t+sci_T+wt+sc_t])
+    connector();
 }
 
-/*
+//lower_piece();
 
-for(i = [50:5:75])
-{
-    echo(i);
-    translate([(i-50)*5,0,0])
-        plate_holder(i,p_h);
-};
-
-plate_holder(60,p_h);
-
-*/
+upper_piece();
