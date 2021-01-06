@@ -70,8 +70,6 @@ p_t = 5;
 // '-> also point where joint is
 p_h = 50;
 
-// plate interface length
-pi_l = 5;
 // plate interface depth
 pi_d = 10;
 // plate interface width
@@ -103,6 +101,15 @@ j_x = bl;
 j_y = (bl-tol)/2;
 j_z = j_x;
 
+// plate interace parameters
+// '-> pi_cd - plate interface cut depth
+// '-> pi_ch - plate interface cut height
+// '-> pi_x, pi_y, pi_z - plate interface dimensions
+pi_cd = 10;
+pi_ch = p_t; // same as the plate wall thickness
+pi_x = j_x;
+pi_y = j_x;
+pi_z = pi_cd+5;
 
 module suction_interface()
 {
@@ -194,6 +201,7 @@ module joint_shape()
     
 }
 
+
 module lower_joint()
 {
     translate([0,-j_y-tol/2,0])
@@ -242,7 +250,50 @@ module upper_joint()
     }
 }
 
-//upper_joint();
+
+module plate_interface()
+{
+    difference()
+    {
+        // main cubic shape
+        union()
+        {
+            // main cubic shape
+            cube([pi_x, pi_y, pi_z-j_x/2]);
+            
+            // rounded are on the top
+            translate([pi_x/2,pi_x,pi_z-pi_x/2])
+                rotate([90,0,0])
+                    cylinder(h=pi_y,d=pi_x);
+            
+            // connector to the joint
+            translate([0,pi_y-j_y,0])
+                cube([pi_x, j_y, pi_z]);
+            
+        }
+        // cut for plate wall
+        translate([(pi_x-pi_ch)/2,-eps,-eps])
+            cube([pi_ch,pi_y+2*eps,pi_d+eps-pi_ch/2]);
+            
+        // rounded border for better reinforcement
+        translate([pi_x/2,pi_y+eps,pi_d-pi_ch/2])
+            rotate([90,0,0])
+                cylinder(d=pi_ch,h=pi_y+2*eps);
+        
+        
+    }
+}
+
+module upper_piece()
+{
+    // plate interface
+    translate([-pi_x/2,-pi_x/2,-pi_z])
+        plate_interface();
+    
+    // and upper joint
+    upper_joint();
+    
+}
 
 
 module connector(_a=60,_l=p_h)
