@@ -3,10 +3,59 @@ eps = 0.01;
 $fn = 90;
 tol = 0.2;
 
+// XX m suction cup parameters
+// '-> sc_t - suction cup thickness
+// '-> sc_d - suction cup diameter
+// '-> sci_d - suction cup interface narrowed diameter
+// '-> sci_t - suction cup interface narrowed thickness
+// '-> sci_D - suction cup interface top part diameter
+// '-> sci_T - suction cup interface top part thickness
+// '-> sci_off - suction cup interace lock offset
+
+// suction cup offset
+// '-> 20 mm suction cup
+/*
+sc_t = 1; // TODO measure
+sc_d = 20;
+sci_d = 3.6;
+sci_t = 1.8;
+sci_D = 7;
+sci_T = 2+tol;
+sci_off = 0.25;
+*/
+
+// '-> 30 mm suction cup
+/*
+sc_t = 1; // TODO measure
+sc_d = 30;
+sci_d = 4.8;
+sci_t = 2.5;
+sci_D = 7.8;
+sci_T = 1.8+tol;
+sci_off = 0.25;
+*/
+
+// '-> 40 mm suction cup
+///*
+sc_t = 1; // TODO measure
+sc_d = 40;
+sci_d = 8;
+sci_t = 2.75;
+sci_D = 12.7;
+sci_T = 3.75+tol;
+sci_off = 0.5;
+//*/
+
+// plate holder consits of two part connected by bolt and nut
+// '-> upper part has interface to the plate
+// '-> middle part connects and reinforce both interfaces
+// '-> lower part has interface to the suction cup
+
+// TODO parameters
+
 // plate parameters
 // wall thickness
 wt = 2;
-
 
 // plate wall angle
 a = 60;
@@ -31,112 +80,68 @@ c_d = 10;
 // upper part parameters
 // - D and H
 
-// suction cup offset
-// '-> 2 mm suction cup
-/*
-sc_off = 0.25;
-sc_diam = 20;
-sc_d = 3.6;
-sc_h = 1.8;
-sc_D = 7;
-sc_H = 2+tol;
-*/
-
-// '-> 3 mm suction cup
-/*
-sc_off = 0.25;
-sc_diam = 30;
-sc_d = 4.8;
-sc_h = 2.5;
-sc_D = 7.8;
-sc_H = 1.8+tol;
-*/
-
-// '-> 4 mm suction cup
-///*
-sc_off = 0.5;
-sc_diam = 40;
-sc_d = 8;
-sc_h = 2.75;
-sc_D = 12.7;
-sc_H = 3.75+tol;
-//*/
-
-module suction_interface(_a=0,_l=0)
+module suction_interface()
 {
-    _D = 2*wt + sc_D;
-    _H = sc_h+sc_H+wt;
+    _D = 2*wt + sci_D;
+    _T = sci_t+sci_T+wt;
     
     difference()
     {
-        // TODO possiblz change orientation
-        //main shell
-        //cylinder(d=_D, h=_H);
-        translate([-_D/2,-_D/2,0])
-            cube([_D,_D,_H]);
+        // main shell
+        // '-> hull of lower cylinder and upper 
+        hull()
+        {
+            // block to fit suction cup interface
+            translate([-_D/2,-_D/2,0])
+                cube([_D,_D,_T]);
+            // cylinder TODO
+            cylinder(d=sc_d,h=sc_t);
+            
+        }
         
         // cutting lower suction cup compartement
         translate([0,0,-eps])
-            cylinder(d=sc_d, h=sc_h+2*eps);
+            cylinder(d=sci_d, h=sci_t+2*eps);
         // '-> entry hole
-        _x = sc_d-2*sc_off;
-        _y = sc_D/2+wt;
+        _x = sci_d-2*sci_off;
+        _y = sci_D/2+wt;
         translate([-_x/2,0,-eps])
-                cube([_x,_y,sc_h+2*eps]);
+                cube([_x,_y,sci_t+2*eps]);
         // '-> slide in
         hull()
         {
             // wider part
-            translate([-_x/2-sc_off,sc_d/2+3*sc_off,-eps])
-                cube([_x+2*sc_off,_y,sc_h+2*eps]);
+            translate([-_x/2-sci_off,sci_d/2+3*sci_off,-eps])
+                cube([_x+2*sci_off,_y,sci_t+2*eps]);
             // more narrow part
-            translate([-_x/2,sc_d/2+sc_off,-eps])
-                cube([_x,_y,sc_h+2*eps]);
+            translate([-_x/2,sci_d/2+sci_off,-eps])
+                cube([_x,_y,sci_t+2*eps]);
         }
         
         // cutting upper suction cup compartement
-        translate([0,0,sc_h])
-            cylinder(d=sc_D, h=sc_H);
+        translate([0,0,sci_t])
+            cylinder(d=sci_D, h=sci_T);
         
         // '-> hole
-        _X = sc_D - 2* sc_off;
+        _X = sci_D - 2* sci_off;
         _Y = _y;
-        translate([-_X/2,0,sc_h])
-            cube([_X,_Y,sc_H]);
+        translate([-_X/2,0,sci_t])
+            cube([_X,_Y,sci_T]);
         // '-> slide in
-        translate([0,0,sc_h])
+        translate([0,0,sci_t])
         hull()
         {
             // wider part
-            translate([-_X/2-sc_off,sc_D/2+3*sc_off,0])
-                cube([_X+2*sc_off,_y,sc_H]);
+            translate([-_X/2-sci_off,sci_D/2+3*sci_off,0])
+                cube([_X+2*sci_off,_y,sci_T]);
             // more narrow part
-            translate([-_X/2,sc_D/2+sc_off,0])
-                cube([_X,_y,sc_H]);
+            translate([-_X/2,sci_D/2+sci_off,0])
+                cube([_X,_y,sci_T]);
         }
-        
-        // debug print
-        f_s = 5;
-        f_d = 0.5;
-        translate([_D/2+eps-f_d,0,_H/2])
-        rotate([0,90,0])
-        rotate([0,0,90])  
-            linear_extrude(f_d)
-                text(str("a:",_a),
-                    font="Consolas:style=Regular",size=f_s,
-                    valign="center", halign="center");
-        
-        translate([-_D/2-eps+f_d,0,_H/2])
-        rotate([0,-90,0])
-        rotate([0,0,270])  
-            linear_extrude(f_d)
-                text(str("h:",_l),
-                    font="Consolas:style=Regular",size=f_s,
-                    valign="center", halign="center");
-
-    }
-        
+    }        
 }
+
+suction_interface();
 
 
 module connector(_a=60,_l=p_h)
@@ -219,6 +224,8 @@ module plate_holder(_a=a,_l=p_h)
         connector(_a=_a);
 }
 
+/*
+
 for(i = [50:5:75])
 {
     echo(i);
@@ -228,3 +235,4 @@ for(i = [50:5:75])
 
 plate_holder(60,p_h);
 
+*/
