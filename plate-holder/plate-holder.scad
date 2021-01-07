@@ -292,7 +292,9 @@ module upper_piece()
         plate_interface();
     
     // and upper joint
-    upper_joint();
+    translate([0,j_y+tol,0])
+        rotate([0,0,180])
+            upper_joint();
     
 }
 
@@ -355,6 +357,6 @@ module lower_piece()
         connector();
 }
 
-lower_piece();
+//lower_piece();
 
-//upper_piece();
+upper_piece();
