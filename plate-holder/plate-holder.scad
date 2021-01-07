@@ -134,6 +134,10 @@ module suction_interface()
         // cutting suction cup disc compartement
         translate([0,0,-eps])
             cylinder(d=sc_d,h=sc_t+eps);
+        
+        // adding hole into suction cup disc borderline
+        translate([-sci_D/2,0,-eps])
+            cube([sci_D,sc_d,sc_t]);
 
         // moving suction cup interface up
         translate([0,0,sc_t])
@@ -217,11 +221,11 @@ module lower_joint()
         {
             // hole for the bolt
             rotate([90,0,0])
-                cylinder(d=bd,h=j_y+2*eps);
+                cylinder(d=bd+tol,h=j_y+2*eps);
             
             // hole for the bolt head
             rotate([90,0,0])
-                cylinder(d=bhd,h=bht);
+                cylinder(d=bhd+tol,h=bht);
         }
         
     }
@@ -242,11 +246,11 @@ module upper_joint()
         {
             // hole for the bolt
             rotate([90,0,0])
-                cylinder(d=bd,h=j_y+2*eps);
+                cylinder(d=bd+tol,h=j_y+2*eps);
             
-            // hole for the bolt head
+            // hole for nut
             rotate([90,0,0])
-                cylinder(d=nd,h=nt,$fn=6);
+                cylinder(d=nd,h=nt+tol,$fn=6);
         }
     }
 }
@@ -357,6 +361,6 @@ module lower_piece()
         connector();
 }
 
-//lower_piece();
+lower_piece();
 
-upper_piece();
+//upper_piece();
