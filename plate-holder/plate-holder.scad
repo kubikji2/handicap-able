@@ -39,7 +39,7 @@ sci_off = 0.25;
 
 // '-> 40 mm suction cup parameters
 ///*
-sc_t = 1; // TODO measure
+sc_t = 1.5+tol; // TODO measure
 sc_d = 40;
 sci_d = 8;
 sci_t = 2.75;
@@ -68,7 +68,7 @@ a = 60;
 p_t = 5;
 // plate hight
 // '-> also point where joint is
-p_h = 50;
+p_h = 50+9;
 
 // plate interface depth
 pi_d = 10;
@@ -307,17 +307,18 @@ module connector()
             // main connector body
             translate([-c_d/2,-c_d/2,0])
             {
-                // lower full cube
-                cube([c_d,c_d,_h-c_d/2]);
+                // connector to the joint
+                cube([c_d,j_y,_h]);
                 
-                // rounded area
-                translate([c_d/2,c_d,_h-c_d/2])
-                    rotate([90,0,0])
-                        cylinder(h=c_d,d=c_d);
-                
-                // connecting to the joint
-                translate([0,c_d-j_y,0])
-                    cube([c_d,j_y,_h]);
+                // reinforcement
+                hull()
+                {
+                    // lower full cube
+                    cube([c_d,c_d,_D-c_d]);           
+                    
+                    // connecting to the joint
+                    cube([c_d,j_y,_h-c_d]);
+                }
             }
             
             // connecting to the suction cup intergace
@@ -335,8 +336,13 @@ module connector()
             }
             
             // adding upper joint
+            /*
             translate([0,0,_h])
-                upper_joint();
+                rotate([0,0,180])
+                    lower_joint();
+            */
+            translate([0,0,_h])
+                lower_joint();
          }
     }
     
@@ -346,9 +352,9 @@ module lower_piece()
 {
     suction_interface();
     translate([0,0,sci_t+sci_T+wt+sc_t])
-    connector();
+        connector();
 }
 
-//lower_piece();
+lower_piece();
 
-upper_piece();
+//upper_piece();
