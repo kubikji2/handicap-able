@@ -40,7 +40,7 @@ sci_off = 0.25;
 // '-> 40 mm suction cup parameters
 ///*
 sc_t = 1.5+tol; // TODO measure
-sc_d = 40;
+sc_d = 41;
 sci_d = 8;
 sci_t = 2.75;
 sci_D = 12.7;
