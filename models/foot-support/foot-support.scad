@@ -80,9 +80,9 @@ module wheelchair_interface()
 // Foot Board parameters
 // fb_ as prefix
 // x dimension
-fb_x = 100;
+fb_x = 120;
 // y dimension
-fb_y = 100;
+fb_y = 120;
 // z dimension
 fb_z = 15;
 // thicknes
