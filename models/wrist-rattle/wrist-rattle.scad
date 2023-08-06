@@ -1,4 +1,4 @@
-use<round_corners.scad>;
+use<../lib/round_corners.scad>
 
 eps = 0.01;
 tol = 0.3;
@@ -50,7 +50,7 @@ module bare_rattle()
 module rattle()
 {
     // rattle
-        bare_rattle();
+    bare_rattle();
     
     points = [  [-rb_d,r_r/2+rb_d/2,-eps],
                 [-rb_d,r_r/2+2.5*rb_d,-eps],
