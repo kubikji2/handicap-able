@@ -1,13 +1,11 @@
 # Cutlery extender status
 
-[X] design
-[X] print
-[X] test
+TODO add description
 
-## TODOs
+## Roadmap
 
 [ ] add Mispulin
-    [ ] get picture
+    [ ] get a picture
     [ ] vectorize it
     [ ] add to the model
 [ ] modify it for the fork
