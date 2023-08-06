@@ -2,6 +2,7 @@
 
 [X] design
 [X] print
+[X] test
 
 ## TODOs
 
