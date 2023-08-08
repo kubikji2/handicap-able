@@ -1,2 +1,4 @@
+# ignore slicing related files
 *.gcode
 *.3mf
+*.stl
