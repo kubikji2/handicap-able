@@ -1,10 +1,10 @@
 # Hand handle status
 
-TODO add reame
+Hand-held piece to ease the spasmodic fist.
 
 ## Roadmap
 
 - [X] Design
 - [X] Print PLA
 - [X] Select proper size -> optimal is C30 E40
-- [ ] Print FLEX with various infills
+- [x] Print FLEX with various infills

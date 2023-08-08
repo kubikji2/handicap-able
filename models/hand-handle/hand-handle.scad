@@ -5,12 +5,12 @@ $fn = 90;
 // contact area height
 c_h = 60;
 // contact area diameter
-c_d = 15;
+c_d = 30;
 
 // enders height
 e_h = 5;
 // enders diameters 
-e_d = 20;
+e_d = 40;
 
 // transition height
 t_h = (e_d-c_d);
