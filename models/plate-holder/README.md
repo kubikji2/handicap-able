@@ -6,7 +6,7 @@
 
 ## TODOs
 
-[ ] finalize design - modify nylock nuts
+[ ] Finalize design - modify nylock nuts
 [ ] prepare rPET/G slicing profile
 [ ] test rPET/G profile and print it
 [ ] get link(s) to the alternative suction caps
